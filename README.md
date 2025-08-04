@@ -1,27 +1,58 @@
+# 🏨 The Wild Oasis – Admin Dashboard (React)
+
+##  Project Overview
+
+**The Wild Oasis** is a full-featured **admin dashboard** for managing hotel or property reservations.  
+Built with modern React patterns, this app is designed to be **scalable**, **themeable**, and **production-ready**, with a focus on clean code, UI consistency, and seamless user experience.
+
+---
+
+##  Features and Highlights
+
+- 👉 **Dashboard Overview**  
+  Visual metrics for occupancy rate, revenue, check-ins, and stay durations.
+
+- 👉 **Cabin Management**  
+  Create, edit, delete, and list cabin inventory with pricing, availability, and features.
+
+- 👉 **Bookings Management**  
+  View, filter, and manage booking data — including check-in/out dates and guest info.
+
+- 👉 **Guest Profiles**  
+  Detailed views for each guest with contact info and booking history.
+
+- 👉 **Dark Mode Toggle**  
+  Fully implemented light/dark theming with persistent preference.
+
+- 👉 **Filtering & Sorting**  
+  Powerful list/table views with sorting and filtering on all key fields.
+
+- 👉 **Optimistic UI Updates**  
+  Instant feedback with rollback for mutations using **React Query**.
+
+- 👉 **Authentication (Optional)**  
+  Ready-to-extend logic for login/logout and user access management.
+
+---
+
+##  Built With
+
+| Tech / Library       | Role                                      |
+|----------------------|-------------------------------------------|
+| **React 18**         | UI framework                              |
+| **React Router**     | Routing and layout structure              |
+| **React Query**      | Server state management (data fetching, cache) |
+| **Styled Components**| Component-scoped styling                  |
+| **Supabase** (or mock API) | Database/auth backend (optional)    |
+| **Vite**             | Lightning-fast build and dev environment  |
+| **Context API**      | Theme toggling and shared app state       |
+
+---
+
+##  Getting Started
+
+```bash
+npm install
+npm run dev
 
 
-# Project Overview
-This project is a modern React application designed with a focus on reusability, scalability, and maintainability. It leverages cutting-edge tools and patterns to deliver a robust user experience.
-
-# Features and Highlights
-Tailwind CSS: Streamlined styling with a utility-first CSS framework.
-
-Context API: Simplified global state management.
-
-React Query: Efficient data fetching and server state management.
-
-React Router: Dynamic and intuitive client-side routing.
-
-Compound Components: Flexible component architecture for greater control and customization.
-
-Reusable UI Components: Modular components for consistent design and efficient development.
-
-Custom Hooks: Abstracted logic for cleaner, reusable code.
-
-Dark Mode: Built-in theme switcher for light and dark modes.
-
-Scalable Design: Structured to support future growth and feature enhancements.
-
-Modern React Practices: Utilizes the latest React features and best practices.
-
-This project serves as a foundation for building dynamic, responsive, and maintainable web applications.
