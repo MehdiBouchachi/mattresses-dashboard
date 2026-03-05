@@ -28,7 +28,6 @@ const StyledFormRow = styled.div`
 
     position: sticky;
     bottom: 0;
-    background: var(--color-grey-0);
     padding-top: 1rem;
   }
 
