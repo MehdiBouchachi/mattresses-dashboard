@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { device } from "../styles/breakpoints";
 
 const StyledFormRow = styled.div`
   display: grid;
@@ -24,6 +25,17 @@ const StyledFormRow = styled.div`
     display: flex;
     justify-content: flex-end;
     gap: 1.2rem;
+
+    position: sticky;
+    bottom: 0;
+    background: var(--color-grey-0);
+    padding-top: 1rem;
+  }
+
+  /* 📱 Mobile Fix */
+  @media ${device.mobile} {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
   }
 `;
 

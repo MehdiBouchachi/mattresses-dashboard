@@ -1,16 +1,33 @@
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import styled from "styled-components";
 import Heading from "../../ui/Heading";
 import { useDarkMode } from "../../context/DarkModeContext";
+import { device } from "../../styles/breakpoints";
 
 const ChartBox = styled.div`
-  /* Box */
   background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
 
   padding: 2.4rem 3.2rem;
+
   grid-column: 3 / span 2;
+
+  @media ${device.laptop} {
+    grid-column: 1 / -1;
+  }
+
+  @media ${device.tablet} {
+    grid-column: 1 / -1;
+    padding: 2rem;
+  }
 
   & > *:first-child {
     margin-bottom: 1.6rem;
@@ -112,7 +129,7 @@ function prepareData(startData, stays) {
 
   function incArrayValue(arr, field) {
     return arr.map((obj) =>
-      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj
+      obj.duration === field ? { ...obj, value: obj.value + 1 } : obj,
     );
   }
 

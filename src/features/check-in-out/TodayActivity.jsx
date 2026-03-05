@@ -6,31 +6,48 @@ import Row from "../../ui/Row";
 import { useTodayActivity } from "./useTodayActivity";
 import Spinner from "../../ui/Spinner";
 import TodayItem from "./TodayItem";
+import { device } from "../../styles/breakpoints";
 
 const StyledToday = styled.div`
-  /* Box */
   background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-100);
   border-radius: var(--border-radius-md);
 
   padding: 3.2rem;
+  padding-top: 2.4rem;
+
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-  grid-column: 1 / span 2;
-  padding-top: 2.4rem;
-`;
 
+  grid-column: 1 / span 2;
+
+  @media ${device.laptop} {
+    grid-column: 1 / -1;
+  }
+
+  @media ${device.tablet} {
+    grid-column: 1 / -1;
+    padding: 2rem;
+  }
+`;
 const TodayList = styled.ul`
-  overflow: scroll;
+  max-height: 28rem;
+  overflow-y: auto;
   overflow-x: hidden;
 
-  /* Removing scrollbars for webkit, firefox, and ms, respectively */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
   &::-webkit-scrollbar {
-    width: 0 !important;
+    width: 4px;
   }
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-grey-200);
+    border-radius: 10px;
+  }
 `;
 
 const NoActivity = styled.p`

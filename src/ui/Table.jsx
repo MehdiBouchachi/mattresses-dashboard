@@ -3,11 +3,12 @@ import styled from "styled-components";
 
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
-
   font-size: 1.4rem;
   background-color: var(--color-grey-0);
   border-radius: 7px;
-  overflow: hidden;
+
+  overflow-x: auto;
+  scroll-behavior: smooth;
 `;
 
 const CommonRow = styled.div`
@@ -15,7 +16,8 @@ const CommonRow = styled.div`
   grid-template-columns: ${(props) => props.columns};
   column-gap: 2.4rem;
   align-items: center;
-  transition: none;
+
+  min-width: 700px;
 `;
 
 const StyledHeader = styled(CommonRow)`

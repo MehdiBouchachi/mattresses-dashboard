@@ -7,24 +7,33 @@ import DarkModeToggle from "./DarkModeToggle";
 
 const StyledHeaderMenu = styled.ul`
   display: flex;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 2rem;
 `;
+
+const MenuItem = styled.li`
+  display: flex;
+  align-items: center;
+`;
+
 function HeaderMenu() {
   const navigate = useNavigate();
 
   return (
     <StyledHeaderMenu>
-      <li>
+      <MenuItem>
         <ButtonIcon onClick={() => navigate("/account")}>
           <HiOutlineUser />
         </ButtonIcon>
-      </li>
-      <li>
+      </MenuItem>
+
+      <MenuItem>
         <DarkModeToggle />
-      </li>
-      <li>
+      </MenuItem>
+
+      <MenuItem>
         <Logout />
-      </li>
+      </MenuItem>
     </StyledHeaderMenu>
   );
 }

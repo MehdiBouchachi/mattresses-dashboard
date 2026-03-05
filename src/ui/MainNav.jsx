@@ -12,6 +12,14 @@ const NavList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+
+  @media (max-width: 1024px) {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    gap: 0;
+  }
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -28,7 +36,6 @@ const StyledNavLink = styled(NavLink)`
     transition: all 0.3s;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
   &:hover,
   &:active,
   &.active:link,
@@ -38,6 +45,7 @@ const StyledNavLink = styled(NavLink)`
     border-radius: var(--border-radius-sm);
   }
 
+  /* ICON */
   & svg {
     width: 2.4rem;
     height: 2.4rem;
@@ -51,8 +59,32 @@ const StyledNavLink = styled(NavLink)`
   &.active:visited svg {
     color: var(--color-brand-600);
   }
-`;
 
+  /* MOBILE MODE */
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0.6rem;
+    gap: 0.2rem;
+
+    background: none;
+
+    span {
+      display: none;
+    }
+
+    & svg {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+
+    &.active svg {
+      color: var(--color-brand-600);
+    }
+  }
+`;
 function MainNav() {
   return (
     <nav>

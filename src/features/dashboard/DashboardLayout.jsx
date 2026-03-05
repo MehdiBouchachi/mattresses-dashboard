@@ -8,11 +8,31 @@ import SalesChart from "./SalesChart";
 import DurationChart from "./DurationChart";
 import TodayActivity from "../check-in-out/TodayActivity";
 
+import { device } from "../../styles/breakpoints";
+
 const StyledDashboardLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto 34rem auto;
+  grid-template-columns: repeat(4, 1fr);
   gap: 2.4rem;
+
+  /* allow rows to grow naturally */
+  grid-auto-rows: min-content;
+
+  /* Laptop */
+  @media ${device.laptop} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Tablet */
+  @media ${device.tablet} {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mobile */
+  @media ${device.mobile} {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
 `;
 
 function DashboardLayout() {
@@ -33,7 +53,7 @@ function DashboardLayout() {
         numDays={numDays}
         cabinCount={cabins.length}
       />
-      <TodayActivity />
+         <TodayActivity />
       <DurationChart confirmedStays={confirmedStays} />
       <SalesChart bookings={bookings} numDays={numDays} />
     </StyledDashboardLayout>

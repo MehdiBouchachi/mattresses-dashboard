@@ -114,10 +114,28 @@ export const GlobalStyles = createGlobalStyle`/*
   transition: background-color 0.3s, border 0.3s;
 }
 
+
 html {
   font-size: 62.5%;
 }
 
+@media (max-width: 1200px) {
+  html {
+    font-size: 60%;
+  }
+}
+
+@media (max-width: 900px) {
+  html {
+    font-size: 56%;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 52%;
+  }
+}
 body {
   font-family: "Poppins", sans-serif;
   color: var(--color-grey-700);
