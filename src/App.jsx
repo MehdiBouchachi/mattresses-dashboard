@@ -17,6 +17,9 @@ import Checkin from "./pages/Checkin";
 import ProtectedRoute from "./ui/ProtectedRoute";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import { GlobalStyles } from "./styles/GlobalStyles";
+import Products from "./pages/Products";
+import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +50,12 @@ function App() {
               <Route path="dashboard" element={<Dashboard />} />
 
               <Route path="bookings" element={<Bookings />} />
+              <Route path="products" element={<Products />} />
+              <Route path="products/new" element={<CreateProduct />} />
+              <Route
+                path="products/:productId/edit"
+                element={<EditProduct />}
+              />
 
               <Route path="bookings/:bookingId" element={<Booking />} />
 
