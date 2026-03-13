@@ -10,7 +10,21 @@ import { useDimensions } from "./useDimensions";
 import { useThicknesses } from "./useThicknesses";
 import { useCreateProduct } from "./useCreateProduct";
 import { useUpdateProduct } from "./useUpdateProduct";
-
+import {
+  FiEdit3,
+  FiPlus,
+  FiFileText,
+  FiImage,
+  FiDollarSign,
+  FiSettings,
+  FiStar,
+  FiUploadCloud,
+  FiX,
+  FiInfo,
+  FiAlertTriangle,
+  FiCamera,
+  FiLoader,
+} from "react-icons/fi";
 /* ═══════════════════════════════════════════
    ANIMATIONS
 ═══════════════════════════════════════════ */
@@ -907,11 +921,6 @@ const MatrixHint = styled.div`
   background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-200);
   border-radius: 0.6rem;
-
-  &::before {
-    content: "ℹ️";
-    font-size: 1.3rem;
-  }
 `;
 
 /* ── Dynamic Rows ── */
@@ -1525,7 +1534,15 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
         <FormTitle>
           {isEditSession ? "Edit Product" : "Create New Product"}
           <FormBadge $variant={isEditSession ? "edit" : "new"}>
-            {isEditSession ? "✏️ Editing" : "✚ New"}
+            {isEditSession ? (
+              <>
+                <FiEdit3 /> Editing
+              </>
+            ) : (
+              <>
+                <FiPlus /> New
+              </>
+            )}
           </FormBadge>
         </FormTitle>
       </FormHeader>
@@ -1553,7 +1570,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
       <Section id="section-basic" $delay="0.05s">
         <SectionHeader>
           <SectionTitleGroup>
-            <SectionIcon $color="blue">📋</SectionIcon>
+            <SectionIcon $color="blue">
+              <FiFileText />
+            </SectionIcon>
             <div>
               <SectionTitle>Basic Information</SectionTitle>
               <SectionSubtitle>
@@ -1764,7 +1783,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
       <Section id="section-images" $delay="0.1s">
         <SectionHeader>
           <SectionTitleGroup>
-            <SectionIcon $color="green">🖼️</SectionIcon>
+            <SectionIcon $color="green">
+              <FiImage />
+            </SectionIcon>
             <div>
               <SectionTitle>Product Images</SectionTitle>
               <SectionSubtitle>
@@ -1795,7 +1816,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
             onDragLeave={() => setDragActive(false)}
             onDrop={handleDrop}
           >
-            <DropZoneIcon>📁</DropZoneIcon>
+            <DropZoneIcon>
+              <FiUploadCloud />
+            </DropZoneIcon>
             <DropZoneText>
               Drag & drop images here or <span>browse files</span>
             </DropZoneText>
@@ -1850,7 +1873,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
                 </ImagePreviewGrid>
               ) : (
                 <EmptyState>
-                  <EmptyIcon>📷</EmptyIcon>
+                  <EmptyIcon>
+                    <FiCamera />
+                  </EmptyIcon>
                   <EmptyText>No images uploaded yet</EmptyText>
                 </EmptyState>
               )
@@ -1865,7 +1890,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
       <Section id="section-pricing" $delay="0.15s">
         <SectionHeader>
           <SectionTitleGroup>
-            <SectionIcon $color="yellow">💰</SectionIcon>
+            <SectionIcon $color="yellow">
+              <FiDollarSign />
+            </SectionIcon>
             <div>
               <SectionTitle>Price Matrix</SectionTitle>
               <SectionSubtitle>
@@ -1935,6 +1962,7 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
           </MatrixWrapper>
 
           <MatrixHint>
+            <FiInfo />
             Leave cells empty for unavailable combinations. At least one price
             is required.
           </MatrixHint>
@@ -1947,7 +1975,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
       <Section id="section-specs" $delay="0.2s">
         <SectionHeader>
           <SectionTitleGroup>
-            <SectionIcon $color="indigo">⚙️</SectionIcon>
+            <SectionIcon $color="indigo">
+              <FiSettings />
+            </SectionIcon>
             <div>
               <SectionTitle>Technical Specifications</SectionTitle>
               <SectionSubtitle>
@@ -2004,7 +2034,9 @@ function CreateProductForm({ productToEdit = {}, onCloseModal }) {
       <Section id="section-features" $delay="0.25s">
         <SectionHeader>
           <SectionTitleGroup>
-            <SectionIcon $color="green">✨</SectionIcon>
+            <SectionIcon $color="green">
+              <FiStar />
+            </SectionIcon>
             <div>
               <SectionTitle>Product Features</SectionTitle>
               <SectionSubtitle>
