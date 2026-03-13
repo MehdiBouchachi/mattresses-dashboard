@@ -502,11 +502,11 @@ const PriceRange = styled.div`
   padding: 1.6rem;
   background: linear-gradient(
     135deg,
-    var(--color-brand-50),
+    var(--color-indigo-600),
     var(--color-indigo-100)
   );
   border-radius: 1rem;
-  border: 1px solid var(--color-brand-100);
+  border: 1px solid var(--color-indigo-100);
   overflow: hidden;
 
   @media ${device.mobile} {
