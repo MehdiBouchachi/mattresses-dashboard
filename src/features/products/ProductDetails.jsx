@@ -10,7 +10,6 @@ import {
   HiStar,
   HiTag,
   HiCube,
-  HiPhoto,
   HiTableCells,
   HiWrenchScrewdriver,
   HiSparkles,
@@ -21,6 +20,7 @@ import {
 import { useMoveBack } from "../../hooks/useMoveBack";
 import Spinner from "../../ui/Spinner";
 import { useProduct } from "./useProduct";
+import { device } from "../../styles/breakpoints";
 
 /* ═══════════════════════════════════════════
    ANIMATIONS
@@ -41,11 +41,6 @@ const scaleIn = keyframes`
   to { opacity: 1; transform: scale(1); }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
 /* ═══════════════════════════════════════════
    LAYOUT
 ═══════════════════════════════════════════ */
@@ -58,12 +53,13 @@ const Page = styled.div`
   gap: 2.4rem;
   animation: ${fadeIn} 0.4s ease-out;
 
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     gap: 2rem;
   }
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     gap: 1.6rem;
+    overflow-x: hidden;
   }
 `;
 
@@ -108,13 +104,9 @@ const BackButton = styled.button`
     color: var(--color-grey-800);
   }
 
-  @media (max-width: 480px) {
-    padding: 0.7rem 1rem;
+  @media ${device.mobile} {
+    padding: 0.6rem 1rem;
     font-size: 1.2rem;
-
-    span {
-      display: none;
-    }
   }
 `;
 
@@ -131,7 +123,7 @@ const Breadcrumb = styled.div`
     font-weight: 600;
   }
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     display: none;
   }
 `;
@@ -170,6 +162,11 @@ const LangButton = styled.button`
   &:hover:not([disabled]) {
     color: var(--color-brand-600);
   }
+
+  @media ${device.mobile} {
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+  }
 `;
 
 /* ── Hero Section ── */
@@ -180,9 +177,14 @@ const HeroGrid = styled.div`
   gap: 2.4rem;
   animation: ${fadeIn} 0.5s ease-out 0.1s both;
 
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  @media ${device.mobile} {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
   }
 `;
 
@@ -194,6 +196,10 @@ const GalleryCard = styled.div`
   border: 1px solid var(--color-grey-100);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+
+  @media ${device.mobile} {
+    border-radius: 0.8rem;
+  }
 `;
 
 const MainImageWrapper = styled.div`
@@ -202,6 +208,10 @@ const MainImageWrapper = styled.div`
   aspect-ratio: 4 / 3;
   background-color: var(--color-grey-50);
   overflow: hidden;
+
+  @media ${device.mobile} {
+    aspect-ratio: 16 / 10;
+  }
 `;
 
 const MainImage = styled.img`
@@ -249,17 +259,22 @@ const ImageNav = styled.button`
           right: 1.2rem;
         `}
 
-  @media (max-width: 480px) {
-    width: 3rem;
-    height: 3rem;
+  @media ${device.mobile} {
+    width: 3.2rem;
+    height: 3.2rem;
+
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
 
     ${(props) =>
       props.$direction === "left"
         ? css`
-            left: 0.8rem;
+            left: 0.6rem;
           `
         : css`
-            right: 0.8rem;
+            right: 0.6rem;
           `}
   }
 `;
@@ -292,6 +307,11 @@ const ThumbnailStrip = styled.div`
     background: var(--color-grey-200);
     border-radius: 2px;
   }
+
+  @media ${device.mobile} {
+    padding: 0.8rem 1rem;
+    gap: 0.8rem;
+  }
 `;
 
 const Thumb = styled.button`
@@ -322,9 +342,10 @@ const Thumb = styled.button`
     border-color: var(--color-brand-400);
   }
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     width: 5.6rem;
     height: 4.4rem;
+    border-radius: 0.4rem;
   }
 `;
 
@@ -340,13 +361,14 @@ const InfoCard = styled.div`
   flex-direction: column;
   gap: 2rem;
 
-  @media (max-width: 768px) {
+  @media ${device.tablet} {
     padding: 2rem;
   }
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     padding: 1.6rem;
-    gap: 1.6rem;
+    gap: 1.4rem;
+    border-radius: 0.8rem;
   }
 `;
 
@@ -355,8 +377,9 @@ const ProductTitle = styled.h1`
   font-weight: 700;
   color: var(--color-grey-900);
   line-height: 1.3;
+  word-break: break-word;
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     font-size: 2rem;
   }
 `;
@@ -418,9 +441,11 @@ const Description = styled.p`
   font-size: 1.4rem;
   line-height: 1.7;
   color: var(--color-grey-600);
+  word-break: break-word;
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     font-size: 1.3rem;
+    line-height: 1.6;
   }
 `;
 
@@ -435,8 +460,7 @@ const MetaGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 1.6rem;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+  @media ${device.mobile} {
     gap: 1.2rem;
   }
 `;
@@ -445,6 +469,7 @@ const MetaItem = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  min-width: 0;
 `;
 
 const MetaLabel = styled.span`
@@ -453,12 +478,21 @@ const MetaLabel = styled.span`
   color: var(--color-grey-400);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+
+  @media ${device.mobile} {
+    font-size: 1rem;
+  }
 `;
 
 const MetaValue = styled.span`
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--color-grey-800);
+  word-break: break-word;
+
+  @media ${device.mobile} {
+    font-size: 1.3rem;
+  }
 `;
 
 const PriceRange = styled.div`
@@ -473,6 +507,12 @@ const PriceRange = styled.div`
   );
   border-radius: 1rem;
   border: 1px solid var(--color-brand-100);
+  overflow: hidden;
+
+  @media ${device.mobile} {
+    padding: 1.2rem;
+    border-radius: 0.8rem;
+  }
 `;
 
 const PriceLabel = styled.span`
@@ -487,9 +527,10 @@ const PriceValue = styled.span`
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--color-brand-700);
+  word-break: break-word;
 
-  @media (max-width: 480px) {
-    font-size: 1.8rem;
+  @media ${device.mobile} {
+    font-size: 1.6rem;
   }
 `;
 
@@ -509,6 +550,10 @@ const ContentSection = styled.div`
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   animation: ${fadeIn} 0.4s ease-out ${(props) => props.$delay || "0.2s"} both;
+
+  @media ${device.mobile} {
+    border-radius: 0.8rem;
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -519,9 +564,9 @@ const SectionHeader = styled.div`
   border-bottom: 1px solid var(--color-grey-100);
   background-color: var(--color-grey-0);
 
-  @media (max-width: 480px) {
-    padding: 1.6rem;
-    gap: 1rem;
+  @media ${device.mobile} {
+    padding: 1.4rem 1.6rem;
+    gap: 0.8rem;
   }
 `;
 
@@ -561,7 +606,7 @@ const SectionIcon = styled.div`
     return map[props.$color] || map.blue;
   }}
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     width: 3.2rem;
     height: 3.2rem;
 
@@ -576,6 +621,7 @@ const SectionTitleGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  min-width: 0;
 `;
 
 const SectionTitle = styled.h2`
@@ -583,7 +629,7 @@ const SectionTitle = styled.h2`
   font-weight: 700;
   color: var(--color-grey-800);
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     font-size: 1.4rem;
   }
 `;
@@ -591,6 +637,10 @@ const SectionTitle = styled.h2`
 const SectionSubtitle = styled.p`
   font-size: 1.1rem;
   color: var(--color-grey-400);
+
+  @media ${device.mobile} {
+    display: none;
+  }
 `;
 
 const SectionCount = styled.span`
@@ -606,17 +656,18 @@ const SectionCount = styled.span`
   color: var(--color-grey-600);
   font-size: 1.1rem;
   font-weight: 700;
+  flex-shrink: 0;
 `;
 
 const SectionBody = styled.div`
   padding: 2rem 2.4rem;
 
-  @media (max-width: 480px) {
-    padding: 1.6rem;
+  @media ${device.mobile} {
+    padding: 1.2rem 1.6rem;
   }
 `;
 
-/* ── Variants Table ── */
+/* ── Variants — Desktop Table ── */
 
 const TableScroll = styled.div`
   overflow-x: auto;
@@ -630,11 +681,15 @@ const TableScroll = styled.div`
     background: var(--color-grey-200);
     border-radius: 3px;
   }
+
+  @media ${device.mobile} {
+    display: none;
+  }
 `;
 
 const Table = styled.table`
   width: 100%;
-  min-width: 48rem;
+  min-width: 36rem;
   border-collapse: separate;
   border-spacing: 0;
 `;
@@ -681,11 +736,6 @@ const Tbody = styled.tbody`
     &:last-child {
       text-align: right;
     }
-
-    @media (max-width: 480px) {
-      font-size: 1.3rem;
-      padding: 1rem 1.2rem;
-    }
   }
 `;
 
@@ -712,10 +762,6 @@ const PriceCell = styled.span`
   font-weight: 700;
   color: var(--color-green-700);
   font-size: 1.5rem;
-
-  @media (max-width: 480px) {
-    font-size: 1.3rem;
-  }
 `;
 
 const PriceCurrency = styled.span`
@@ -725,6 +771,76 @@ const PriceCurrency = styled.span`
   margin-left: 0.3rem;
 `;
 
+/* ── Variants — Mobile Cards ── */
+
+const VariantCards = styled.div`
+  display: none;
+
+  @media ${device.mobile} {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.2rem 1.6rem;
+  }
+`;
+
+const VariantCard = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem;
+  background-color: var(--color-grey-50);
+  border: 1px solid var(--color-grey-100);
+  border-radius: 0.8rem;
+  animation: ${fadeIn} 0.3s ease-out both;
+  animation-delay: ${(props) => props.$delay || "0s"};
+`;
+
+const VariantInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+`;
+
+const VariantDimension = styled.span`
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-grey-800);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  svg {
+    width: 1.4rem;
+    height: 1.4rem;
+    color: var(--color-grey-400);
+    flex-shrink: 0;
+  }
+`;
+
+const VariantThickness = styled.span`
+  font-size: 1.1rem;
+  color: var(--color-grey-500);
+  font-weight: 500;
+`;
+
+const VariantPrice = styled.span`
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-green-700);
+  white-space: nowrap;
+  flex-shrink: 0;
+`;
+
+const VariantPriceCurrency = styled.span`
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-grey-500);
+  margin-left: 0.2rem;
+`;
+
 /* ── Specs Table ── */
 
 const SpecsGrid = styled.div`
@@ -732,7 +848,7 @@ const SpecsGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 0;
 
-  @media (max-width: 600px) {
+  @media ${device.mobile} {
     grid-template-columns: 1fr;
   }
 `;
@@ -745,6 +861,7 @@ const SpecRow = styled.div`
   border-bottom: 1px solid var(--color-grey-100);
   animation: ${slideIn} 0.25s ease-out both;
   animation-delay: ${(props) => props.$delay || "0s"};
+  gap: 1.2rem;
 
   &:nth-child(odd) {
     background-color: var(--color-grey-50);
@@ -756,8 +873,9 @@ const SpecRow = styled.div`
     }
   }
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     padding: 1rem 1.2rem;
+    gap: 0.8rem;
   }
 `;
 
@@ -765,6 +883,11 @@ const SpecLabel = styled.span`
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--color-grey-600);
+  flex-shrink: 0;
+
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 const SpecValue = styled.span`
@@ -772,6 +895,11 @@ const SpecValue = styled.span`
   font-weight: 700;
   color: var(--color-grey-800);
   text-align: right;
+  word-break: break-word;
+
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 /* ── Features ── */
@@ -781,9 +909,9 @@ const FeaturesGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
   gap: 1.2rem;
 
-  @media (max-width: 480px) {
+  @media ${device.mobile} {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.8rem;
   }
 `;
 
@@ -805,6 +933,11 @@ const FeatureCard = styled.div`
     border-color: var(--color-brand-200);
     box-shadow: var(--shadow-sm);
   }
+
+  @media ${device.mobile} {
+    padding: 1.2rem;
+    gap: 0.8rem;
+  }
 `;
 
 const FeatureIcon = styled.div`
@@ -817,11 +950,20 @@ const FeatureIcon = styled.div`
   background-color: var(--color-brand-100);
   color: var(--color-brand-700);
   flex-shrink: 0;
-  font-size: 1.3rem;
 
   svg {
     width: 1.4rem;
     height: 1.4rem;
+  }
+
+  @media ${device.mobile} {
+    width: 2.4rem;
+    height: 2.4rem;
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
   }
 `;
 
@@ -830,6 +972,11 @@ const FeatureText = styled.span`
   font-weight: 500;
   color: var(--color-grey-700);
   line-height: 1.5;
+  word-break: break-word;
+
+  @media ${device.mobile} {
+    font-size: 1.2rem;
+  }
 `;
 
 /* ── Empty State ── */
@@ -1068,7 +1215,7 @@ function ProductDetails() {
       </HeroGrid>
 
       {/* ══════════════════════
-         VARIANTS TABLE
+         VARIANTS
       ══════════════════════ */}
       {variants.length > 0 && (
         <ContentSection $delay="0.25s">
@@ -1086,6 +1233,7 @@ function ProductDetails() {
           </SectionHeader>
 
           <SectionBody style={{ padding: 0 }}>
+            {/* Desktop table */}
             <TableScroll>
               <Table>
                 <Thead>
@@ -1137,6 +1285,27 @@ function ProductDetails() {
                 </Tbody>
               </Table>
             </TableScroll>
+
+            {/* Mobile cards */}
+            <VariantCards>
+              {variants.map((v, i) => (
+                <VariantCard key={v.id} $delay={`${0.05 * i}s`}>
+                  <VariantInfo>
+                    <VariantDimension>
+                      <HiCube />
+                      {v.dimension?.label || "—"}
+                    </VariantDimension>
+                    <VariantThickness>
+                      Thickness: {v.thickness?.value || "—"} cm
+                    </VariantThickness>
+                  </VariantInfo>
+                  <VariantPrice>
+                    {v.price?.toLocaleString()}
+                    <VariantPriceCurrency>DA</VariantPriceCurrency>
+                  </VariantPrice>
+                </VariantCard>
+              ))}
+            </VariantCards>
           </SectionBody>
         </ContentSection>
       )}
