@@ -22,14 +22,17 @@ const StyledModal = styled.div`
 
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
 
   transition: all 0.3s;
 
   @media ${device.mobile} {
     width: 95%;
     padding: 2.4rem 2rem;
+    max-width: none;
   }
 `;
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;

@@ -22,28 +22,31 @@ const StyledAppLayout = styled.div`
 
   @media ${device.mobile} {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
 
     grid-template-areas:
       "header"
-      "main"
-      "sidebar";
+      "main";
   }
 `;
+
 const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4rem 6.4rem;
   grid-area: main;
   overflow-y: auto;
+
   @media ${device.tablet} {
     padding: 3rem 3rem;
   }
 
   @media ${device.mobile} {
     padding: 2rem 1.6rem;
-    padding-bottom: 8rem;
+    /* Enough space so content isn't hidden behind the taller bottom nav */
+    padding-bottom: 10rem;
   }
 `;
+
 const Container = styled.div`
   max-width: 120rem;
   margin: 0 auto;
@@ -64,13 +67,12 @@ const Container = styled.div`
     max-width: 100%;
   }
 `;
+
 function AppLayout() {
   return (
     <StyledAppLayout>
       <Header />
-
       <SideBar />
-
       <Main>
         <Container>
           <Outlet />

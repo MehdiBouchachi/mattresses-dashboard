@@ -1,13 +1,28 @@
-import UpdateSettingsForm from "../features/settings/UpdateSettingsForm";
+import styled from "styled-components";
 import Heading from "../ui/Heading";
-import Row from "../ui/Row";
+import DimensionsSection from "../features/settings/DimensionsSection";
+import ThicknessSection from "../features/settings/ThicknessSection";
+import MetaPixelSection from "../features/settings/MetaPixelSection";
+import { device } from "../styles/breakpoints";
+
+const StyledSettingsLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3.2rem;
+
+  @media ${device.mobile} {
+    gap: 2.4rem;
+  }
+`;
 
 function Settings() {
   return (
-    <Row>
-      <Heading as="h1">Update hotel settings</Heading>
-      <UpdateSettingsForm />
-    </Row>
+    <StyledSettingsLayout>
+      <Heading as="h1">Settings</Heading>
+      <DimensionsSection />
+      <ThicknessSection />
+      <MetaPixelSection />
+    </StyledSettingsLayout>
   );
 }
 

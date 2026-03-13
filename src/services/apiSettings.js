@@ -1,27 +1,131 @@
 import supabase from "./supabase";
 
-export async function getSettings() {
-  const { data, error } = await supabase.from("settings").select("*").single();
+// ========================
+// DIMENSIONS
+// ========================
+
+export async function getDimensions() {
+  const { data, error } = await supabase
+    .from("dimensions")
+    .select("*")
+    .order("id");
 
   if (error) {
     console.error(error);
-    throw new Error("Settings could not be loaded");
+    throw new Error("Dimensions could not be loaded");
   }
+
   return data;
 }
 
-// We expect a newSetting object that looks like {setting: newValue}
-export async function updateSetting(newSetting) {
+export async function createDimension(label) {
   const { data, error } = await supabase
-    .from("settings")
-    .update(newSetting)
-    // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
-    .eq("id", 1)
-    .single();
+    .from("dimensions")
+    .insert([{ label }])
+    .select();
 
   if (error) {
     console.error(error);
-    throw new Error("Settings could not be updated");
+    throw new Error("Dimension could not be created");
   }
+
+  return data;
+}
+
+export async function deleteDimension(id) {
+  const { data, error } = await supabase
+    .from("dimensions")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Dimension could not be deleted");
+  }
+
+  return data;
+}
+
+// ========================
+// THICKNESSES
+// ========================
+
+export async function getThicknesses() {
+  const { data, error } = await supabase
+    .from("thicknesses")
+    .select("*")
+    .order("id");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Thicknesses could not be loaded");
+  }
+
+  return data;
+}
+
+export async function createThickness(value) {
+  const { data, error } = await supabase
+    .from("thicknesses")
+    .insert([{ value }])
+    .select();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Thickness could not be created");
+  }
+
+  return data;
+}
+
+export async function deleteThickness(id) {
+  const { data, error } = await supabase
+    .from("thicknesses")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Thickness could not be deleted");
+  }
+
+  return data;
+}
+
+// ========================
+// SITE SETTINGS
+// ========================
+
+export async function getSetting(key) {
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("*")
+    .eq("key", key)
+    .single();
+
+  // If no row found yet, return null gracefully
+  if (error && error.code === "PGRST116") {
+    return null;
+  }
+
+  if (error) {
+    console.error(error);
+    throw new Error(`Setting "${key}" could not be loaded`);
+  }
+
+  return data;
+}
+
+export async function updateSetting({ key, value }) {
+  const { data, error } = await supabase
+    .from("site_settings")
+    .upsert({ key, value }, { onConflict: "key" })
+    .select();
+
+  if (error) {
+    console.error(error);
+    throw new Error(`Setting "${key}" could not be updated`);
+  }
+
   return data;
 }

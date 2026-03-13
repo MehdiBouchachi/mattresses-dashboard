@@ -9,13 +9,14 @@ const TableOperations = styled.div`
   /* Tablet */
   @media ${device.tablet} {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     width: 100%;
-    gap: 1.2rem;
   }
 
   /* Mobile */
   @media ${device.mobile} {
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
   }
 `;

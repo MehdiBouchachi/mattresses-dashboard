@@ -46,9 +46,7 @@ const Actions = styled.div`
 function Header() {
   return (
     <StyledHeader>
-      <LeftSection>
-        <UserAvatar />
-      </LeftSection>
+      <LeftSection>{/*   <UserAvatar /> */} Mehdi Mohamed</LeftSection>
 
       <Actions>
         <HeaderMenu />

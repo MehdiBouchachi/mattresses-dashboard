@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import {
-  HiOutlineCalendarDays,
-  HiOutlineCog6Tooth,
   HiOutlineHome,
-  HiOutlineHomeModern,
-  HiOutlineUsers,
+  HiOutlineShoppingBag,
+  HiOutlineSquares2X2,
+  HiOutlineClipboardDocumentList,
+  HiOutlineCog6Tooth,
 } from "react-icons/hi2";
 
 const NavList = styled.ul`
@@ -45,7 +45,6 @@ const StyledNavLink = styled(NavLink)`
     border-radius: var(--border-radius-sm);
   }
 
-  /* ICON */
   & svg {
     width: 2.4rem;
     height: 2.4rem;
@@ -60,19 +59,34 @@ const StyledNavLink = styled(NavLink)`
     color: var(--color-brand-600);
   }
 
-  /* MOBILE MODE */
+  & .nav-label {
+    display: inline;
+  }
+
+  /* MOBILE / TABLET MODE */
   @media (max-width: 1024px) {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    &:link,
+    &:visited {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      gap: 0.4rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: none;
+      border-radius: 0.8rem;
+      position: relative;
+      min-width: 6rem;
+    }
 
-    padding: 0.6rem;
-    gap: 0.2rem;
-
-    background: none;
-
-    span {
-      display: none;
+    & .nav-label {
+      display: block;
+      font-size: 1.1rem;
+      line-height: 1.3;
+      white-space: nowrap;
+      color: var(--color-grey-500);
+      transition: all 0.3s;
     }
 
     & svg {
@@ -80,43 +94,92 @@ const StyledNavLink = styled(NavLink)`
       height: 2.6rem;
     }
 
+    &.active:link,
+    &.active:visited {
+      background-color: transparent;
+    }
+
+    &.active .nav-label {
+      color: var(--color-brand-600);
+      font-weight: 600;
+    }
+
     &.active svg {
       color: var(--color-brand-600);
+    }
+
+    &.active::before {
+      content: "";
+      position: absolute;
+      top: -0.8rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2.4rem;
+      height: 0.3rem;
+      background-color: var(--color-brand-600);
+      border-radius: 0 0 0.4rem 0.4rem;
+    }
+
+    &:hover,
+    &:active {
+      background-color: var(--color-grey-50);
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 374px) {
+    &:link,
+    &:visited {
+      min-width: 5.2rem;
+      padding: 0.8rem 0.4rem;
+    }
+
+    & .nav-label {
+      font-size: 1rem;
+    }
+
+    & svg {
+      width: 2.4rem;
+      height: 2.4rem;
     }
   }
 `;
 function MainNav() {
   return (
-    <nav>
+    <nav style={{ width: "100%" }}>
       <NavList>
         <li>
           <StyledNavLink to="/dashboard">
             <HiOutlineHome />
-            <span> Home</span>
+            <span className="nav-label">Home</span>
           </StyledNavLink>
         </li>
+
         <li>
-          <StyledNavLink to="/bookings">
-            <HiOutlineCalendarDays />
-            <span> Bookings</span>
+          <StyledNavLink to="/products">
+            <HiOutlineShoppingBag />
+            <span className="nav-label">Products</span>
           </StyledNavLink>
         </li>
+
         <li>
-          <StyledNavLink to="/cabins">
-            <HiOutlineHomeModern />
-            <span> Cabins</span>
+          <StyledNavLink to="/categories">
+            <HiOutlineSquares2X2 />
+            <span className="nav-label">Categories</span>
           </StyledNavLink>
         </li>
+
         <li>
-          <StyledNavLink to="/users">
-            <HiOutlineUsers />
-            <span> Users</span>
+          <StyledNavLink to="/orders">
+            <HiOutlineClipboardDocumentList />
+            <span className="nav-label">Orders</span>
           </StyledNavLink>
         </li>
+
         <li>
           <StyledNavLink to="/settings">
             <HiOutlineCog6Tooth />
-            <span> Settings</span>
+            <span className="nav-label">Settings</span>
           </StyledNavLink>
         </li>
       </NavList>
