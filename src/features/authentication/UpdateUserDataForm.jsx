@@ -32,7 +32,7 @@ function UpdateUserDataForm() {
           setAvatar(null);
           e.target.reset();
         },
-      }
+      },
     );
   }
 
@@ -55,14 +55,7 @@ function UpdateUserDataForm() {
           id="fullName"
         />
       </FormRow>
-      <FormRow label="Avatar image">
-        <FileInput
-          disabled={isUpdating}
-          id="avatar"
-          accept="image/*"
-          onChange={(e) => setAvatar(e.target.files[0])}
-        />
-      </FormRow>
+
       <FormRow>
         <Button
           type="reset"
