@@ -230,7 +230,7 @@ const ImageNav = styled.button`
   height: 3.6rem;
   border-radius: 50%;
   border: none;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--color-indigo-100);
   backdrop-filter: blur(4px);
   color: var(--color-grey-700);
   display: flex;
@@ -246,7 +246,7 @@ const ImageNav = styled.button`
   }
 
   &:hover {
-    background-color: #fff;
+    background-color: var(--color-indigo-100);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
@@ -286,7 +286,7 @@ const ImageCounter = styled.span`
   padding: 0.4rem 1rem;
   border-radius: 10rem;
   background-color: rgba(0, 0, 0, 0.6);
-  color: #fff;
+  color: var(--color-brand-50);
   font-size: 1.1rem;
   font-weight: 600;
   backdrop-filter: blur(4px);
