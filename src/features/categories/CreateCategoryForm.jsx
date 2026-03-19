@@ -32,6 +32,12 @@ const FormTitle = styled.h2`
   }
 `;
 
+const FormSubtitle = styled.p`
+  font-size: 1.3rem;
+  color: var(--color-grey-500);
+  margin-top: -0.4rem;
+`;
+
 const FieldGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -115,15 +121,55 @@ const ButtonRow = styled.div`
   }
 `;
 
-function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
+const LockedField = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  background-color: var(--color-grey-50);
+  border: 1px solid var(--color-grey-200);
+  border-radius: var(--border-radius-sm);
+  font-size: 1.4rem;
+  color: var(--color-grey-600);
+  font-weight: 500;
+`;
+
+const LockedBadge = styled.span`
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-700);
+  text-transform: capitalize;
+`;
+
+function CreateCategoryForm({
+  categoryToEdit = {},
+  defaultType,
+  defaultParentId,
+  onCloseModal,
+}) {
   const { id: editId, ...editValues } = categoryToEdit;
   const isEditSession = Boolean(editId);
+
+  // Determine if this is a "quick add" from menu (pre-filled type + parent)
+  const isQuickAdd = !isEditSession && defaultType && defaultParentId;
 
   const { createCategory, isCreating } = useCreateCategory();
   const { updateCategory, isUpdating } = useUpdateCategory();
   const { categories } = useCategories();
 
   const isWorking = isCreating || isUpdating;
+
+  // Resolve the initial type and parent
+  const initialType = isEditSession
+    ? editValues.type || "main"
+    : defaultType || "main";
+
+  const initialParentId = isEditSession
+    ? editValues.parent_id || ""
+    : defaultParentId || "";
 
   const {
     register,
@@ -143,8 +189,8 @@ function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
         }
       : {
           value: "",
-          type: "main",
-          parent_id: "",
+          type: initialType,
+          parent_id: initialParentId,
           "translations.en": "",
           "translations.fr": "",
           "translations.ar": "",
@@ -153,6 +199,29 @@ function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
 
   const selectedType = watch("type");
   const parentOptions = getParentOptions(categories || [], selectedType);
+
+  // Find the parent category name for quick-add display
+  const quickAddParent = isQuickAdd
+    ? categories?.find((c) => c.id === defaultParentId)
+    : null;
+  const quickAddParentName = quickAddParent
+    ? getCategoryDisplayName(quickAddParent)
+    : "";
+
+  // Title text
+  function getFormTitle() {
+    if (isEditSession) return "Edit Category";
+    if (defaultType === "subcategory") return "Add Subcategory";
+    if (defaultType === "type") return "Add Type";
+    return "Create Category";
+  }
+
+  function getFormSubtitle() {
+    if (isQuickAdd && quickAddParentName) {
+      return `Adding under "${quickAddParentName}"`;
+    }
+    return null;
+  }
 
   function onSubmit(data) {
     const categoryData = {
@@ -186,11 +255,14 @@ function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
     }
   }
 
+  const subtitle = getFormSubtitle();
+
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <FormTitle>
-        {isEditSession ? "Edit Category" : "Create Category"}
-      </FormTitle>
+      <div>
+        <FormTitle>{getFormTitle()}</FormTitle>
+        {subtitle && <FormSubtitle>{subtitle}</FormSubtitle>}
+      </div>
 
       <Divider />
 
@@ -261,44 +333,69 @@ function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
 
       <Divider />
 
-      {/* Type */}
+      {/* Type — locked for quick-add, editable otherwise */}
       <FieldGroup>
         <Label htmlFor="type">Type</Label>
-        <StyledSelect
-          id="type"
-          disabled={isWorking}
-          {...register("type", { required: "Type is required" })}
-        >
-          <option value="main">Main Category</option>
-          <option value="subcategory">Subcategory</option>
-          <option value="type">Type</option>
-        </StyledSelect>
+
+        {isQuickAdd ? (
+          <>
+            <LockedField>
+              <LockedBadge>{defaultType}</LockedBadge>
+              <span>
+                {defaultType === "subcategory" ? "Subcategory" : "Type"}
+              </span>
+            </LockedField>
+            {/* Hidden input to include in form data */}
+            <input type="hidden" {...register("type")} />
+          </>
+        ) : (
+          <StyledSelect
+            id="type"
+            disabled={isWorking}
+            {...register("type", { required: "Type is required" })}
+          >
+            <option value="main">Main Category</option>
+            <option value="subcategory">Subcategory</option>
+            <option value="type">Type</option>
+          </StyledSelect>
+        )}
         {errors?.type?.message && <Error>{errors.type.message}</Error>}
       </FieldGroup>
 
-      {/* Parent — hidden for "main" */}
+      {/* Parent — locked for quick-add, dynamic otherwise */}
       {selectedType !== "main" && (
         <FieldGroup>
           <Label htmlFor="parent_id">Parent Category</Label>
-          <StyledSelect
-            id="parent_id"
-            disabled={isWorking || parentOptions.length === 0}
-            {...register("parent_id", {
-              required:
-                selectedType !== "main" ? "Parent category is required" : false,
-            })}
-          >
-            <option value="">
-              {parentOptions.length === 0
-                ? `No ${selectedType === "subcategory" ? "main categories" : "subcategories"} found`
-                : "Select parent..."}
-            </option>
-            {parentOptions.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {getCategoryDisplayName(cat)}
+
+          {isQuickAdd ? (
+            <>
+              <LockedField>{quickAddParentName || "—"}</LockedField>
+              {/* Hidden input to include in form data */}
+              <input type="hidden" {...register("parent_id")} />
+            </>
+          ) : (
+            <StyledSelect
+              id="parent_id"
+              disabled={isWorking || parentOptions.length === 0}
+              {...register("parent_id", {
+                required:
+                  selectedType !== "main"
+                    ? "Parent category is required"
+                    : false,
+              })}
+            >
+              <option value="">
+                {parentOptions.length === 0
+                  ? `No ${selectedType === "subcategory" ? "main categories" : "subcategories"} found`
+                  : "Select parent..."}
               </option>
-            ))}
-          </StyledSelect>
+              {parentOptions.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {getCategoryDisplayName(cat)}
+                </option>
+              ))}
+            </StyledSelect>
+          )}
           {errors?.parent_id?.message && (
             <Error>{errors.parent_id.message}</Error>
           )}
@@ -322,6 +419,10 @@ function CreateCategoryForm({ categoryToEdit = {}, onCloseModal }) {
             <SpinnerMini />
           ) : isEditSession ? (
             "Update Category"
+          ) : defaultType === "subcategory" ? (
+            "Create Subcategory"
+          ) : defaultType === "type" ? (
+            "Create Type"
           ) : (
             "Create Category"
           )}

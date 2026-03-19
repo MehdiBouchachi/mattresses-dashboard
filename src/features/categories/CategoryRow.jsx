@@ -5,6 +5,7 @@ import {
   HiOutlineFolder,
   HiOutlineFolderOpen,
   HiOutlineTag,
+  HiOutlinePlus,
 } from "react-icons/hi2";
 
 import Modal from "../../ui/Modal";
@@ -63,7 +64,6 @@ const IndentBlock = styled.span`
   position: relative;
   flex-shrink: 0;
 
-  /* Vertical line through the block */
   ${(props) =>
     props.$hasLine &&
     css`
@@ -86,7 +86,6 @@ const TreeBranch = styled.span`
   position: relative;
   flex-shrink: 0;
 
-  /* Vertical line from top */
   &::before {
     content: "";
     position: absolute;
@@ -97,7 +96,6 @@ const TreeBranch = styled.span`
     background-color: var(--color-grey-300);
   }
 
-  /* Horizontal branch line */
   &::after {
     content: "";
     position: absolute;
@@ -192,21 +190,22 @@ function CategoryRow({ category, allCategories }) {
   const parent = findCategoryById(allCategories, parent_id);
   const parentName = parent ? getCategoryDisplayName(parent) : "—";
 
-  // Build the indent + tree lines
+  // Determine what child type can be added from this category's menu
+  const canAddSubcategory = type === "main";
+  const canAddType = type === "subcategory";
+
   function renderIndent() {
     if (depth === 0) return null;
 
     const blocks = [];
 
-    // Render continuation lines for each ancestor level
     for (let i = 0; i < depth - 1; i++) {
       const ancestorIsLast = parentTrail[i + 1];
       blocks.push(
-        <IndentBlock key={`indent-${i}`} $hasLine={!ancestorIsLast} />,
+        <IndentBlock key={`indent-${i}`} $hasLine={!ancestorIsLast} />
       );
     }
 
-    // Render the branch connector for current level
     blocks.push(<TreeBranch key="branch" $isLast={isLast} />);
 
     return blocks;
@@ -245,14 +244,49 @@ function CategoryRow({ category, allCategories }) {
         <Menus.Menu>
           <Menus.Toggle id={id} />
           <Menus.List id={id}>
+            {/* Add Subcategory — only for main categories */}
+            {canAddSubcategory && (
+              <Modal.Open opens="add-subcategory">
+                <Menus.Button icon={<HiOutlinePlus />}>
+                  Add Subcategory
+                </Menus.Button>
+              </Modal.Open>
+            )}
+
+            {/* Add Type — only for subcategories */}
+            {canAddType && (
+              <Modal.Open opens="add-type">
+                <Menus.Button icon={<HiOutlinePlus />}>Add Type</Menus.Button>
+              </Modal.Open>
+            )}
+
+            {/* Edit */}
             <Modal.Open opens="edit">
               <Menus.Button icon={<HiOutlinePencil />}>Edit</Menus.Button>
             </Modal.Open>
 
+            {/* Delete */}
             <Modal.Open opens="delete">
               <Menus.Button icon={<HiOutlineTrash />}>Delete</Menus.Button>
             </Modal.Open>
           </Menus.List>
+
+          {/* Add Subcategory Modal — pre-filled with type=subcategory & parent=this */}
+          {canAddSubcategory && (
+            <Modal.Window name="add-subcategory">
+              <CreateCategoryForm
+                defaultType="subcategory"
+                defaultParentId={id}
+              />
+            </Modal.Window>
+          )}
+
+          {/* Add Type Modal — pre-filled with type=type & parent=this */}
+          {canAddType && (
+            <Modal.Window name="add-type">
+              <CreateCategoryForm defaultType="type" defaultParentId={id} />
+            </Modal.Window>
+          )}
 
           {/* Edit Modal */}
           <Modal.Window name="edit">

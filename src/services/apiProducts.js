@@ -1,7 +1,11 @@
 import supabase, { supabaseUrl } from "./supabase";
 
+/* =========================
+   CREATE / EDIT PRODUCT
+========================= */
+
 export async function createEditProduct(newProduct, id) {
-  let query = supabase.from("products");
+  const pricingType = newProduct.pricing_type || "VARIANT_FULL";
 
   const productPayload = {
     slug: newProduct.slug,
@@ -13,17 +17,16 @@ export async function createEditProduct(newProduct, id) {
     available: newProduct.available ?? true,
     featured: newProduct.featured ?? false,
     discount: newProduct.discount || 0,
+    pricing_type: pricingType,
+    base_price:
+      pricingType === "SIMPLE" ? Number(newProduct.base_price) || null : null,
   };
 
-  console.log("IMAGES RECEIVED:", newProduct.images);
-  /* ── CREATE ── */
+  let query = supabase.from("products");
   if (!id) query = query.insert([productPayload]);
-
-  /* ── UPDATE ── */
   if (id) query = query.update(productPayload).eq("id", id);
 
   const { data, error } = await query.select().single();
-
   if (error) {
     console.error(error);
     throw new Error("Product could not be saved");
@@ -33,7 +36,6 @@ export async function createEditProduct(newProduct, id) {
 
   /* ── IMAGES ── */
   if (newProduct.images?.length) {
-    // When editing, clear old images first
     if (id) {
       await supabase.from("product_images").delete().eq("product_id", id);
     }
@@ -41,7 +43,6 @@ export async function createEditProduct(newProduct, id) {
     for (const img of newProduct.images) {
       if (!img) continue;
 
-      // Already-uploaded URL string
       if (typeof img === "string" && img.startsWith(supabaseUrl)) {
         await supabase
           .from("product_images")
@@ -49,7 +50,6 @@ export async function createEditProduct(newProduct, id) {
         continue;
       }
 
-      // File object — upload then save
       if (img instanceof File) {
         const imageName =
           `${Date.now()}-${Math.random()}-${img.name}`.replaceAll("/", "");
@@ -72,24 +72,44 @@ export async function createEditProduct(newProduct, id) {
   }
 
   /* ── VARIANTS ── */
+  // Always clear old variants first
   if (id) {
     await supabase.from("product_variants").delete().eq("product_id", id);
   }
 
-  if (newProduct.variants?.length) {
-    const variantRows = newProduct.variants.map((v) => ({
-      product_id: productId,
-      dimension_id: v.dimension_id,
-      thickness_id: v.thickness_id,
-      price: Number(v.price),
-    }));
+  if (pricingType === "SIMPLE") {
+    // No variants for simple products — base_price saved on products row
+  } else if (pricingType === "VARIANT_DIMENSION") {
+    // dimension_id only, thickness_id = null
+    if (newProduct.variants?.length) {
+      const variantRows = newProduct.variants.map((v) => ({
+        product_id: productId,
+        dimension_id: v.dimension_id,
+        thickness_id: null,
+        price: Number(v.price),
+      }));
 
-    const { error: variantError } = await supabase
-      .from("product_variants")
-      .insert(variantRows);
+      const { error: variantError } = await supabase
+        .from("product_variants")
+        .insert(variantRows);
 
-    if (variantError) {
-      console.error("Variant insert failed:", variantError);
+      if (variantError) console.error("Variant insert failed:", variantError);
+    }
+  } else {
+    // VARIANT_FULL — existing behavior: dimension_id + thickness_id
+    if (newProduct.variants?.length) {
+      const variantRows = newProduct.variants.map((v) => ({
+        product_id: productId,
+        dimension_id: v.dimension_id,
+        thickness_id: v.thickness_id,
+        price: Number(v.price),
+      }));
+
+      const { error: variantError } = await supabase
+        .from("product_variants")
+        .insert(variantRows);
+
+      if (variantError) console.error("Variant insert failed:", variantError);
     }
   }
 
@@ -101,17 +121,12 @@ export async function createEditProduct(newProduct, id) {
   if (newProduct.specs?.length) {
     const specRows = newProduct.specs
       .filter((s) => s.label && s.value)
-      .map((s) => ({
-        product_id: productId,
-        label: s.label,
-        value: s.value,
-      }));
+      .map((s) => ({ product_id: productId, label: s.label, value: s.value }));
 
     if (specRows.length) {
       const { error: specError } = await supabase
         .from("product_specs")
         .insert(specRows);
-
       if (specError) console.error("Spec insert failed:", specError);
     }
   }
@@ -133,7 +148,6 @@ export async function createEditProduct(newProduct, id) {
       const { error: featError } = await supabase
         .from("product_features")
         .insert(featureRows);
-
       if (featError) console.error("Feature insert failed:", featError);
     }
   }
@@ -142,7 +156,7 @@ export async function createEditProduct(newProduct, id) {
 }
 
 /* =========================
-   GET PRODUCTS
+   GET PRODUCTS (SHOP)
 ========================= */
 
 export async function getProducts() {
@@ -156,6 +170,8 @@ export async function getProducts() {
       discount,
       featured,
       available,
+      pricing_type,
+      base_price,
 
       category:category_id (
         value,
@@ -187,36 +203,38 @@ export async function getProducts() {
     discount: p.discount,
     featured: p.featured,
     available: p.available,
+    pricingType: p.pricing_type,
 
-    // Display label
     category: p.category?.translations?.en || p.category?.value || "",
     subcategory: p.subcategory?.translations?.en || p.subcategory?.value || "",
-
-    // Raw value for filtering (matches the Filter option value)
     categoryValue: p.category?.value || "",
 
     image: p.images?.[0]?.url || null,
 
-    priceRange: getPriceRange(p.variants),
+    priceRange: getPriceRange(p.pricing_type, p.base_price, p.variants),
   }));
 }
 
 /* ======================
-   PRICE RANGE
+   PRICE RANGE — pricing_type aware
 ====================== */
 
-function getPriceRange(variants = []) {
+function getPriceRange(pricingType, basePrice, variants = []) {
+  if (pricingType === "SIMPLE") {
+    return basePrice ? `${basePrice}` : 0;
+  }
+
+  // VARIANT_FULL or VARIANT_DIMENSION
   if (!variants.length) return 0;
-
   const prices = variants.map((v) => v.price);
-
   const min = Math.min(...prices);
   const max = Math.max(...prices);
-
   return min === max ? `${min}` : `${min} – ${max}`;
 }
 
-// services/apiProducts.js — REPLACE getProduct
+/* =========================
+   GET PRODUCT (ADMIN)
+========================= */
 
 export async function getProduct(id) {
   if (!id) throw new Error("Product ID is required");
@@ -235,6 +253,8 @@ export async function getProduct(id) {
       category_id,
       subcategory_id,
       type_id,
+      pricing_type,
+      base_price,
 
       category:category_id (
         value,
@@ -290,88 +310,6 @@ export async function getProduct(id) {
 
   return data;
 }
-/* =========================
-   CREATE / UPDATE PRODUCT
-========================= */
-
-export async function createEditProductdd(newProduct, id) {
-  const hasImagePath = newProduct?.images?.[0]?.file?.startsWith?.(supabaseUrl);
-
-  const imageName =
-    `${Math.random()}-${newProduct.images?.[0]?.file?.name}`.replaceAll(
-      "/",
-      "",
-    );
-
-  const imagePath = hasImagePath
-    ? newProduct.images[0].file
-    : `${supabaseUrl}/storage/v1/object/public/product_images/${imageName}`;
-
-  let query = supabase.from("products");
-
-  /* CREATE */
-
-  if (!id)
-    query = query.insert([
-      {
-        slug: newProduct.slug,
-        name: newProduct.name_en,
-        description: newProduct.description_en,
-        category_id: newProduct.category_id,
-        subcategory_id: newProduct.subcategory_id,
-        available: newProduct.available,
-        featured: newProduct.featured,
-        discount: newProduct.discount,
-      },
-    ]);
-
-  /* UPDATE */
-
-  if (id)
-    query = query
-      .update({
-        slug: newProduct.slug,
-        name: newProduct.name_en,
-        description: newProduct.description_en,
-        category_id: newProduct.category_id,
-        subcategory_id: newProduct.subcategory_id,
-        available: newProduct.available,
-        featured: newProduct.featured,
-        discount: newProduct.discount,
-      })
-      .eq("id", id);
-
-  const { data, error } = await query.select().single();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Product could not be created");
-  }
-
-  /* =========================
-     IMAGE UPLOAD
-  ========================= */
-
-  if (hasImagePath) return data;
-
-  const { error: storageError } = await supabase.storage
-    .from("product_images")
-    .upload(imageName, newProduct.images[0].file);
-
-  if (storageError) {
-    await supabase.from("products").delete().eq("id", data.id);
-    throw new Error("Product image upload failed");
-  }
-
-  /* SAVE IMAGE URL */
-
-  await supabase.from("product_images").insert({
-    product_id: data.id,
-    url: imagePath,
-  });
-
-  return data;
-}
 
 /* =========================
    DELETE PRODUCT
@@ -379,7 +317,6 @@ export async function createEditProductdd(newProduct, id) {
 
 export async function deleteProduct(id) {
   const { error } = await supabase.from("products").delete().eq("id", id);
-
   if (error) {
     console.error(error);
     throw new Error("Product could not be deleted");
