@@ -9,8 +9,16 @@ export async function createEditProduct(newProduct, id) {
 
   const productPayload = {
     slug: newProduct.slug,
-    name: newProduct.name_en,
-    description: newProduct.description_en,
+    name: {
+      en: newProduct.name_en || "",
+      fr: newProduct.name_fr || "",
+      ar: newProduct.name_ar || "",
+    },
+    description: {
+      en: newProduct.description_en || "",
+      fr: newProduct.description_fr || "",
+      ar: newProduct.description_ar || "",
+    },
     category_id: newProduct.category_id || null,
     subcategory_id: newProduct.subcategory_id || null,
     type_id: newProduct.type_id || null,
@@ -198,7 +206,8 @@ export async function getProducts() {
 
   return data.map((p) => ({
     id: p.id,
-    name: p.name,
+    name: p.name?.en || p.name?.fr || p.name?.ar || "",
+    nameTranslations: p.name,
     slug: p.slug,
     discount: p.discount,
     featured: p.featured,

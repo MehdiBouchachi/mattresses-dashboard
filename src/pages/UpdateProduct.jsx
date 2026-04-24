@@ -225,13 +225,13 @@ function UpdateProduct() {
     // Basic fields
     slug: product.slug,
     name: product.name,
-    name_en: product.name || "",
-    name_fr: product.name_fr || "",
-    name_ar: product.name_ar || "",
+    name_en: product.name?.en || "",
+    name_fr: product.name?.fr || "",
+    name_ar: product.name?.ar || "",
     description: product.description,
-    description_en: product.description || "",
-    description_fr: product.description_fr || "",
-    description_ar: product.description_ar || "",
+    description_en: product.description?.en || "",
+    description_fr: product.description?.fr || "",
+    description_ar: product.description?.ar || "",
 
     // Category IDs — raw numbers from DB
     category_id: product.category_id || "",
@@ -275,7 +275,13 @@ function UpdateProduct() {
           </BackButton>
           <HeaderText>
             <Heading>Edit Product</Heading>
-            <HeaderSubtitle>Editing {product.name}</HeaderSubtitle>
+            <HeaderSubtitle>
+              Editing{" "}
+              {product.name?.en ||
+                product.name?.fr ||
+                product.name?.ar ||
+                "Product"}
+            </HeaderSubtitle>
           </HeaderText>
         </HeaderLeft>
         <ProductIdBadge>ID: {product.id}</ProductIdBadge>
